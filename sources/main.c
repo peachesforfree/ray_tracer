@@ -113,3 +113,5 @@ int main(void)
 
 
 // gcc -Wall -Wextra -Werror -I libs/minilibx -L libs/minilibx -lmlx -framework OpenGL -framework AppKit sources/main.c
+//last left off at location 234 ... need to figure out how to allow different types of item to be passed into hit() (on ray_tracer.h line 70)\
+//      maybe make it into a function pointer list where each item has its own number id?

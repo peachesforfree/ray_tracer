@@ -55,6 +55,34 @@ typedef struct      s_sphere
 
 }                   t_sphere;
 
+typedef struct      s_hit_record
+{
+    float   t;
+    t_vec3  p;
+    t_vec3  normal;
+}                   t_hit_record;
+
+//bool    hit(t_ray *r, float t_min, float t_max, t_hit_record *rec)
+
+typedef struct      s_hitable
+{
+    &hit(const ray *r, float t_min, float t_max, hit_record *rec);
+    //under this     sphere, and other shapes should be able to be passed along too
+}                   t_hitable;
+
+typedef struct      s_sphere
+{
+    t_vec3      center;
+    float       radius;
+}                   t_sphere;
+
+typedef struct      s_hitable_list
+{
+    hitable         **hittable;
+    int list_size;
+}                   t_hitable_list;
+
+
 //Ray and vector functions
 t_ray       new_ray(t_vec3 A, t_vec3 B);
 t_vec3      origin(t_ray ray);
@@ -75,11 +103,6 @@ void        make_unit_vector(t_vec3 *A);
 t_vec3      unit_vector(t_vec3 A);
 
 
-
-
-
-
-
 //Vector func
 float   x(t_vec3 *A);
 float   y(t_vec3 *A);
@@ -98,5 +121,9 @@ void		mlx_start(t_mlx *env);
 int    ft_rgb(unsigned char r, unsigned char g, unsigned char b);
 int    ft_hsltorgb(double h, float s, float l);
 float    ft_huetorgb(float v1, float v2, float h);
+
+//sphere
+int         sphere_hit(t_ray r, float t_min, float t_max, t_hit_record *rec, t_sphere sphere);
+t_sphere    new_sphere(t_vec3 center, float radius);
 
 #endif
