@@ -19,6 +19,8 @@
 #define METAL       1
 #define DIELECTRIC  2
 
+#define SPHERE      1
+
 typedef struct	s_mlx
 {
 	void		*mlx;
@@ -38,22 +40,9 @@ typedef struct      s_vec3
 
 typedef struct      s_ray
 {
-    //                        t_vec3  origin;       return A
-    //                        t_vec3  direction;    return B
-    // make into a macro ?    t_vec3  point_at_parameter(float t); //return a+t*B
     t_vec3      A;
     t_vec3      B;
-    //float       _time;
 }                   t_ray;
-
-typedef struct      s_sphere
-{
-    t_vec3      center;     //location on (x,y,z)
-    float       radius;     //radius?
-    t_vec3      rot;        //rotation?
-    void        *material[MATERIAL_TYPES];   // key code for [0]lambertian  [1]metal   [2]dielectric
-
-}                   t_sphere;
 
 typedef struct      s_hit_record
 {
@@ -62,25 +51,32 @@ typedef struct      s_hit_record
     t_vec3  normal;
 }                   t_hit_record;
 
-//bool    hit(t_ray *r, float t_min, float t_max, t_hit_record *rec)
-
-typedef struct      s_hitable
+typedef struct      s_hit_data
 {
-    &hit(const ray *r, float t_min, float t_max, hit_record *rec);
-    //under this     sphere, and other shapes should be able to be passed along too
-}                   t_hitable;
+    t_ray           r;
+    float           tmin;
+    float           tmax;
+}                   t_hit_data;
+
+typedef struct      s_sphere_hit_data
+{
+    t_vec3          oc;
+    float           a;
+    float           b;
+    float           c;
+    float           discriminant;
+}                   t_sphere_hit_data;
 
 typedef struct      s_sphere
 {
-    t_vec3      center;
-    float       radius;
+    t_vec3              center;
+    float               radius;
+    t_vec3              hitable;
+    t_sphere_hit_data   data;
+    int                 (*hit)();
 }                   t_sphere;
 
-typedef struct      s_hitable_list
-{
-    hitable         **hittable;
-    int list_size;
-}                   t_hitable_list;
+
 
 
 //Ray and vector functions
@@ -124,6 +120,6 @@ float    ft_huetorgb(float v1, float v2, float h);
 
 //sphere
 int         sphere_hit(t_ray r, float t_min, float t_max, t_hit_record *rec, t_sphere sphere);
-t_sphere    new_sphere(t_vec3 center, float radius);
+t_sphere    *new_sphere(t_vec3 center, float radius);
 
 #endif

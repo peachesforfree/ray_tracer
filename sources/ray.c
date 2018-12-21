@@ -1,5 +1,11 @@
 #include "../includes/ray_tracer.h"
 
+// typedef struct      s_ray
+// {
+//     t_vec3      A;
+//     t_vec3      B;
+// }                   t_ray;
+
 t_vec3      v_mult_v(t_vec3 A, t_vec3 B)
 {
     t_vec3 result;

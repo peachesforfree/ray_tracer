@@ -38,8 +38,9 @@ t_vec3      color(t_ray *ray)
     t_vec3  N;
     t_vec3  shade;
     t_vec3  temp;
-
+    
     temp = new_vec(0.0, 0.0, -1);
+    
     t = hit_sphere(&temp, 0.5, ray);
     if (t > 0.0)
     {
@@ -54,7 +55,6 @@ t_vec3      color(t_ray *ray)
     sky = v_mult_f(t, new_vec(0.5, 0.7, 1.0));
     return (v_plus_v(white, sky));
 }
-
 
 int main(void)
 {
@@ -74,6 +74,7 @@ int main(void)
     set_vec(&vertical, 0.0, 2.0, 0.0);
     t_vec3  origin;
     set_vec(&origin, 0.0, 0.0, 0.0);
+
 
     int j;
     int i;
