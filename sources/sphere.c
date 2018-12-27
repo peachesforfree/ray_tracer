@@ -16,13 +16,12 @@ typedef struct      s_hit_record
 
 */
 
-t_sphere    *new_sphere(t_vec3 center, float radius)
+t_sphere    *alloc_sphere(t_vec3 center, float radius)
 {
     t_sphere    *result;
 
-    result = (t_sphere*)malloc(sizeof(t_sphere));
+    result = (t_sphere*)ft_memalloc(sizeof(t_sphere));
     copy_vector(&result->center, &center);
     result->radius = radius;
-    result->hit = sphere_hit;
     return(result);
 }

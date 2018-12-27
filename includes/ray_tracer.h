@@ -19,7 +19,6 @@
 #define METAL       1
 #define DIELECTRIC  2
 
-#define SPHERE      1
 
 typedef struct	s_mlx
 {
@@ -71,11 +70,15 @@ typedef struct      s_sphere
 {
     t_vec3              center;
     float               radius;
-    t_vec3              hitable;
-    t_sphere_hit_data   data;
-    int                 (*hit)();
 }                   t_sphere;
 
+typedef struct      s_hit_list
+{
+    int             type;
+    void            *object;
+    int             (*hit)();
+    t_hit_list      *next;
+}                   t_hit_list;
 
 
 
@@ -107,6 +110,7 @@ float   r(t_vec3 *A);
 float   g(t_vec3 *A);
 float   b(t_vec3 *A);
 void    set_vec(t_vec3 *vec, float A, float B, float C);
+t_vec3      new_vec(float a, float b, float c);
 
 
 
@@ -120,6 +124,6 @@ float    ft_huetorgb(float v1, float v2, float h);
 
 //sphere
 int         sphere_hit(t_ray r, float t_min, float t_max, t_hit_record *rec, t_sphere sphere);
-t_sphere    *new_sphere(t_vec3 center, float radius);
+t_sphere    *alloc_sphere(t_vec3 center, float radius);
 
 #endif
