@@ -6,27 +6,70 @@
 #define CYLINDER    4
 
 /*
+    Given world list, ray, min/max, and &t_hit_record
+
+    we cycle throug the linked list, given the function pointer in the linked list, we input
+        ray, t_min, closest_so_far, temp_rec, and the world object
+    this function in the list determines if the ray intercepts the object.
+
+    closest_so_far limits the ray length for potential objects further from the last found object intercept
+
+*/
+
+int hitable_list_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t_hit_list *world)
+{
+    t_hit_record temp_rec;
+    int hit_anything;
+    double closest_so_far;
+
+    hit_anything = 0;
+    closest_so_far = t_max;
+    while(world != NULL)
+    {
+        if (world->hit(r, t_min, closest_so_far, temp_rec, &world->object))   //here we use the hit function in the linked list
+        {                                                                     //need to figure out how to package data to fit into norme
+            hit_anything = 1;
+            closest_so_far = temp_rec.t;
+            rec = temp_rec;
+        }
+        world = world->next;
+    }
+    return (hit_anything);
+}
+
+/*
 **Given the ray and the objects linked list
-
-    update below function to the new C syntax
-    and need to include and write the 
-
     world->hit(r, 0.0, MAXFLOAT, rec)
         which will cycle thru the linked list and check the object with its appropriate hit function
+
+    if an object is intercepted, that determines the color of the pixel.
+
+    else
+    we use a default sky color for the pixel
 */
 
 t_vec3      color(t_ray *ray, t_hit_list *world)
 {
     t_hit_record    rec;
 
-    if (world->hit(r, 0.0, MAXFLOAT, rec))
+    if (hitable_list_hit(ray, 0.0, MAXFLOAT, &rec, world))  //this hit function is different. This one will cycle thru the linked list
     {
-        return (0.5*(unit_direction.y() + 1.0);
+        return (v_mult_f(0.5, new_vec(x(&rec.normal), y(&rec.normal) + 1.0, z(&rec.normal) + 1.0)));
     }
-    //else
-    vec 3 unit_direction = unit_vector(r.direction());
-    float t = 0.5*(unit_direction.y() + 1.0);
-    return (1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
+    //else      use sky coloring
+    t_vec3 unit_direction;
+    float t;
+    t_vec3  sky;
+    t_vec3  white;
+
+    white = new_vec(1.0, 1.0, 1.0);
+    white = v_mult_f((1.0 - t), white);
+
+    sky = new_vec(0.5, 0.7, 1.0);
+    sky = v_mult_f(t, sky);
+    unit_direction = unit_vector(direction(*ray));    
+    t = (0.5*y(&unit_direction) + 1.0);
+    return (v_plus_v(white, sky));
 }
 
 int main(void)
