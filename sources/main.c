@@ -5,6 +5,43 @@
 #define TRIANGLE    3
 #define CYLINDER    4
 
+
+int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t_sphere *sphere)
+{
+    t_vec3 oc;
+    float a;
+    float b;
+    float c;
+    float discriminant;
+
+    oc = v_minus_v(origin(*r), sphere->center);
+    a = dot(direction(*r), direction(*r));
+    b = dot(oc, direction(*r));
+    c = dot(oc, oc) - (sphere->radius * sphere->radius);
+    discriminant = (b * b) - (a * c);
+    if (discriminant > 0)
+    {
+        float temp;
+        temp = (-b - sqrtf(b * b - a * c)) / a;         //optimize ... replace (b * b - a * c) with discriminant variable?
+        if (temp < t_max && temp > t_min)
+        {
+            rec->t = temp;
+            rec->p = point_at_parameter(*r, rec->t);
+            rec->normal = v_div_f(sphere->radius, v_minus_v(rec->p, sphere->center));
+            return (1);
+        }
+        temp = (-b + sqrtf(b * b - a * c)) / a;
+        if (temp < t_max && temp > t_min)
+        {
+            rec->t = temp;
+            rec->p = point_at_parameter(*r, rec->t);
+            rec->normal = v_div_f(sphere->radius, v_minus_v(rec->p, sphere->center));
+            return (1);
+        }
+    }
+    return (0);
+}
+
 /*
     Given world list, ray, min/max, and &t_hit_record
 
@@ -16,7 +53,7 @@
 
 */
 
-int hitable_list_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t_hit_list *world)
+int is_object_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t_hit_list *world)
 {
     t_hit_record temp_rec;
     int hit_anything;
@@ -30,7 +67,7 @@ int hitable_list_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec
         {                                                                     //need to figure out how to package data to fit into norme
             hit_anything = 1;
             closest_so_far = temp_rec.t;
-            rec = temp_rec;
+            *rec = temp_rec;                                                   //may get problems here due to address stuff
         }
         world = world->next;
     }
@@ -52,7 +89,7 @@ t_vec3      color(t_ray *ray, t_hit_list *world)
 {
     t_hit_record    rec;
 
-    if (hitable_list_hit(ray, 0.0, MAXFLOAT, &rec, world))  //this hit function is different. This one will cycle thru the linked list
+    if (is_object_hit(ray, 0.0, MAXFLOAT, &rec, world))  //this hit function is different. This one will cycle thru the linked list
     {
         return (v_mult_f(0.5, new_vec(x(&rec.normal), y(&rec.normal) + 1.0, z(&rec.normal) + 1.0)));
     }
@@ -62,13 +99,15 @@ t_vec3      color(t_ray *ray, t_hit_list *world)
     t_vec3  sky;
     t_vec3  white;
 
+    t = (0.5*y(&unit_direction) + 1.0);
+
     white = new_vec(1.0, 1.0, 1.0);
     white = v_mult_f((1.0 - t), white);
 
     sky = new_vec(0.5, 0.7, 1.0);
     sky = v_mult_f(t, sky);
+
     unit_direction = unit_vector(direction(*ray));    
-    t = (0.5*y(&unit_direction) + 1.0);
     return (v_plus_v(white, sky));
 }
 

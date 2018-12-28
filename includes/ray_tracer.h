@@ -77,9 +77,12 @@ typedef struct      s_hit_list
     int             type;
     void            *object;
     int             (*hit)();
-    t_hit_list      *next;
+    struct s_hit_list      *next;
 }                   t_hit_list;
 
+
+//hit list functions
+t_hit_list *new_hit_list(void);
 
 
 //Ray and vector functions
@@ -91,6 +94,7 @@ t_vec3      cross(t_vec3 A, t_vec3 B);
 float       dot(t_vec3 A, t_vec3 B);//
 void        copy_vector(t_vec3 *a, t_vec3 *b);
 t_vec3      v_div_f(float t, t_vec3 B);//
+t_vec3      v_minus_f(float t, t_vec3 B);
 t_vec3      v_mult_f(float t, t_vec3 B);//
 t_vec3      v_minus_v(t_vec3 A, t_vec3 B);//
 t_vec3      v_div_v(t_vec3 A, t_vec3 B);//
@@ -123,7 +127,7 @@ int    ft_hsltorgb(double h, float s, float l);
 float    ft_huetorgb(float v1, float v2, float h);
 
 //sphere
-int         sphere_hit(t_ray r, float t_min, float t_max, t_hit_record *rec, t_sphere sphere);
+int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t_sphere *sphere);
 t_sphere    *alloc_sphere(t_vec3 center, float radius);
 
 #endif

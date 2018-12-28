@@ -23,7 +23,8 @@ SRCS =	sources/main.c \
 		sources/color.c \
 		sources/ray.c \
 		sources/mlx_functions.c \
-		sources/vector.c
+		sources/vector.c \
+		sources/hit_list.c
 
 OBJS = $(SRCS:.c=.o)
 

@@ -46,6 +46,16 @@ t_vec3      v_minus_v(t_vec3 A, t_vec3 B)
     return (result);
 }
 
+t_vec3      v_minus_f(float t, t_vec3 B)
+{
+    t_vec3  result;
+
+    result.e[0] = B.e[0] - t;
+    result.e[1] = B.e[1] - t;
+    result.e[2] = B.e[2] - t;
+    return (result);
+}
+
 t_vec3      v_mult_f(float t, t_vec3 B)
 {
     t_vec3  result;
