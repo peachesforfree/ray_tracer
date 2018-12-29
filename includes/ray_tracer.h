@@ -19,6 +19,11 @@
 #define METAL       1
 #define DIELECTRIC  2
 
+#define SPHERE      1
+#define CONE        2
+#define TRIANGLE    3
+#define CYLINDER    4
+
 
 typedef struct	s_mlx
 {
@@ -76,7 +81,7 @@ typedef struct      s_hit_list
 {
     int             type;
     void            *object;
-    int             (*hit)();
+//    int             (*hit)();
     struct s_hit_list      *next;
 }                   t_hit_list;
 
@@ -127,7 +132,7 @@ int    ft_hsltorgb(double h, float s, float l);
 float    ft_huetorgb(float v1, float v2, float h);
 
 //sphere
-int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t_sphere *sphere);
+int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr);
 t_sphere    *alloc_sphere(t_vec3 center, float radius);
 
 #endif

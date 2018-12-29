@@ -1,19 +1,23 @@
 #include "../includes/ray_tracer.h"
 
-#define SPHERE      1
-#define CONE        2
-#define TRIANGLE    3
-#define CYLINDER    4
 
 
-int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t_sphere *sphere)
+int     (*g_hit_func_select[2])(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr) = 
 {
+    [1] = ft_sphere_hit
+};
+
+
+int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr)
+{
+    t_sphere *sphere;
     t_vec3 oc;
     float a;
     float b;
     float c;
     float discriminant;
 
+    sphere = ptr;
     oc = v_minus_v(origin(*r), sphere->center);
     a = dot(direction(*r), direction(*r));
     b = dot(oc, direction(*r));
@@ -22,7 +26,7 @@ int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *re
     if (discriminant > 0)
     {
         float temp;
-        temp = (-b - sqrtf(b * b - a * c)) / a;         //optimize ... replace (b * b - a * c) with discriminant variable?
+        temp = (-b - sqrtf((b * b) - (a * c))) / a;         //optimize ... replace (b * b - a * c) with discriminant variable?
         if (temp < t_max && temp > t_min)
         {
             rec->t = temp;
@@ -30,7 +34,7 @@ int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *re
             rec->normal = v_div_f(sphere->radius, v_minus_v(rec->p, sphere->center));
             return (1);
         }
-        temp = (-b + sqrtf(b * b - a * c)) / a;
+        temp = (-b + sqrtf((b * b) - (a * c))) / a;
         if (temp < t_max && temp > t_min)
         {
             rec->t = temp;
@@ -63,7 +67,8 @@ int is_object_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t
     closest_so_far = t_max;
     while(world != NULL)
     {
-        if (world->hit(r, t_min, closest_so_far, temp_rec, &world->object))   //here we use the hit function in the linked list
+        //if (world->hit(r, t_min, closest_so_far, temp_rec, &world->object))   //here we use the hit function in the linked list
+        if ((*g_hit_func_select[world->type])(r, t_min, closest_so_far, &temp_rec, world->object) != 0)
         {                                                                     //need to figure out how to package data to fit into norme
             hit_anything = 1;
             closest_so_far = temp_rec.t;
@@ -89,9 +94,10 @@ t_vec3      color(t_ray *ray, t_hit_list *world)
 {
     t_hit_record    rec;
 
-    if (is_object_hit(ray, 0.0, MAXFLOAT, &rec, world))  //this hit function is different. This one will cycle thru the linked list
+    rec.normal = new_vec(0.0, 0.0, 0.0);
+    if (is_object_hit(ray, 0.0, MAXFLOAT, &rec, world) != 0)  //this hit function is different. This one will cycle thru the linked list
     {
-        return (v_mult_f(0.5, new_vec(x(&rec.normal), y(&rec.normal) + 1.0, z(&rec.normal) + 1.0)));
+        return (v_mult_f(0.5, new_vec(x(&rec.normal) + 1, y(&rec.normal) + 1.0, z(&rec.normal) + 1.0)));
     }
     //else      use sky coloring
     t_vec3 unit_direction;
@@ -99,15 +105,16 @@ t_vec3      color(t_ray *ray, t_hit_list *world)
     t_vec3  sky;
     t_vec3  white;
 
-    t = (0.5*y(&unit_direction) + 1.0);
+    unit_direction = unit_vector(direction(*ray));
+
+    t = (0.5 * y(&unit_direction) + 1.0);
 
     white = new_vec(1.0, 1.0, 1.0);
     white = v_mult_f((1.0 - t), white);
 
     sky = new_vec(0.5, 0.7, 1.0);
     sky = v_mult_f(t, sky);
-
-    unit_direction = unit_vector(direction(*ray));    
+    
     return (v_plus_v(white, sky));
 }
 

@@ -8,7 +8,7 @@
 ** will make head, or append to the linked list
 */
 
-t_hit_list          *append_list(t_hit_list *head, void *object, int (*f)(const t_ray*, float, float, t_hit_record*, t_sphere))
+t_hit_list          *append_list(t_hit_list *head, void *object, int id)
 {
     t_hit_list      *current;
     t_hit_list      *temp;
@@ -16,7 +16,7 @@ t_hit_list          *append_list(t_hit_list *head, void *object, int (*f)(const 
     current = (t_hit_list*)ft_memalloc(sizeof(t_hit_list));
     current->type = 1;
     current->object = object;
-    current->hit = f;
+    current->type = id;
     current->next = NULL;
     if (head == NULL)
         return (current);
@@ -37,8 +37,8 @@ t_hit_list          *new_hit_list(void)
     t_hit_list      *head;
     
     head = NULL;
-    head = append_list(head, alloc_sphere(new_vec(0,0,-1), 0.5), ft_sphere_hit);
-    head = append_list(head, alloc_sphere(new_vec(0,100.5, -1), 100), ft_sphere_hit);
+    head = append_list(head, alloc_sphere(new_vec(0,0,-1), 0.5), SPHERE);
+    head = append_list(head, alloc_sphere(new_vec(0,-100.5, -1), 100), SPHERE);
     return (head);
 }
 
