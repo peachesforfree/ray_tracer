@@ -10,6 +10,7 @@
         "type_traits": "cpp",
         "typeinfo": "cpp",
         "algorithm": "cpp",
-        "__locale": "c"
+        "__locale": "c",
+        "ray_tracer.h": "c"
     }
 }

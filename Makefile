@@ -25,7 +25,8 @@ SRCS =	sources/main.c \
 		sources/mlx_functions.c \
 		sources/vector.c \
 		sources/hit_list.c \
-		sources/sphere.c
+		sources/sphere.c \
+		sources/camera.c
 
 OBJS = $(SRCS:.c=.o)
 

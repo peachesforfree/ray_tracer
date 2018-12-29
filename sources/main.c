@@ -99,75 +99,86 @@ t_vec3      color(t_ray *ray, t_hit_list *world)
     {
         return (v_mult_f(0.5, new_vec(x(&rec.normal) + 1, y(&rec.normal) + 1.0, z(&rec.normal) + 1.0)));
     }
-    //else      use sky coloring
-    t_vec3 unit_direction;
-    float t;
-    t_vec3  sky;
-    t_vec3  white;
+    else      //use sky coloring
+    {
+        t_vec3 unit_direction;
+        float t;
+        t_vec3  sky;
+        t_vec3  white;
 
-    unit_direction = unit_vector(direction(*ray));
+        unit_direction = unit_vector(direction(*ray));
 
-    t = (0.5 * y(&unit_direction) + 1.0);
+        t = (0.5 * y(&unit_direction) + 1.0);
 
-    white = new_vec(1.0, 1.0, 1.0);
-    white = v_mult_f((1.0 - t), white);
+        white = new_vec(1.0, 1.0, 1.0);
+        white = v_mult_f((1.0 - t), white);
 
-    sky = new_vec(0.5, 0.7, 1.0);
-    sky = v_mult_f(t, sky);
-    
-    return (v_plus_v(white, sky));
+        sky = new_vec(0.5, 0.7, 1.0);
+        sky = v_mult_f(t, sky);
+        
+        return (v_plus_v(white, sky));
+    }
 }
 
 int main(void)
 {
     t_mlx   mlx;
-    
     mlx_start(&mlx);
     int *array;
     array = mlx.img;
 
 
-    t_vec3  lower_left_corner;
-    set_vec(&lower_left_corner, -2.0, -1.0, -1.0);
-    t_vec3  horizontal;
-    set_vec(&horizontal, 4.0, 0.0, 0.0);
-    t_vec3  vertical;
-    set_vec(&vertical, 0.0, 2.0, 0.0);
-    t_vec3  origin;
-    set_vec(&origin, 0.0, 0.0, 0.0);
-
+    
     t_hit_list      *world;
     world = new_hit_list();
 
-    int j;
-    int i;
+    t_camera        camera;
+
+    camera = init_camera();
+
+    float j;
+    float i;
     float u;
     float v;
     t_ray   r;
     t_vec3  pixel;
+    t_vec3  p;
     size_t  counter;
 
     counter = 0;
     j = WIN_Y-1;
     while (j >= 0)
     {
+        dprintf(2, "%f\n", j);
         i = 0;
-        v = (float)(j)/(float)(WIN_Y);
+        //v = (float)(j)/(float)(WIN_Y);
         while (i < WIN_X)
         {
-            u = (float)(i) / (float)(WIN_X);
+            //u = (float)(i) / (float)(WIN_X);
             //-1,1 translation and scaling(transformation) for camera
-            r = new_ray(origin, v_plus_v(lower_left_corner, v_plus_v(v_mult_f(u, horizontal), v_mult_f(v, vertical))));
-            
+            //r = new_ray(camera.origin, v_plus_v(camera.lower_left_corner, v_plus_v(v_mult_f(u, camera.horizontal), v_mult_f(v, camera.vertical))));
+                pixel = new_vec(0.0, 0.0, 0.0);
+                int alias_count;
+                alias_count = 0;
+                while (alias_count < SAMPLE_COUNT)
+                {
+                    u = (float)(i + (float)(drand48())) / (float)(i);
+                    v = (float) (j + (float)(drand48())) / (float)(j);
+                    r = get_ray(&camera, u, v);
+                    p = point_at_parameter(r, 2.0);
+                    pixel = v_plus_v(pixel, color(&r, world));
+                    alias_count++;
+                }
+                        
 
-            pixel = color(&r, world);
+            pixel = v_div_f(SAMPLE_COUNT, pixel);
             int ir = (int)(255.99 * pixel.e[0]);
             int ig = (int)(255.99 * pixel.e[1]);
             int ib = (int)(255.99 * pixel.e[2]);
             array[counter++] = ft_rgb(ir, ig, ib);
-            i++;
+            i += 1;
         }
-        j--;
+        j -= 1;
     }
 
 	mlx_put_image_to_window(mlx.mlx, mlx.win, mlx.img_ptr, 0, 0);
@@ -178,14 +189,9 @@ int main(void)
 
 
 // gcc -Wall -Wextra -Werror -I libs/minilibx -L libs/minilibx -lmlx -framework OpenGL -framework AppKit sources/main.c
-/*      make struct where
-            int     id;
-            void    *ptr;
-            int     (*hit)();
-            strct   *next;
+/*      
 
-because each item type has a special ray intercept equation. That will be referenced in int(*hit)() and (struct)
-beacuse the function is assigned in advanced, no need to change or cast in the process.
-
+        some issue with the anti aliasing
+        probably an issue with the math and order of operations
 
 */

@@ -12,6 +12,7 @@
 //Screen dimensions
 #define WIN_X 800
 #define WIN_Y 400
+#define SAMPLE_COUNT 50
 
 //material types
 #define MATERIAL_TYPES 3
@@ -85,6 +86,14 @@ typedef struct      s_hit_list
     struct s_hit_list      *next;
 }                   t_hit_list;
 
+typedef struct      s_camera
+{
+    t_vec3  origin;
+    t_vec3  lower_left_corner;
+    t_vec3  horizontal;
+    t_vec3  vertical;
+}                   t_camera;
+
 
 //hit list functions
 t_hit_list *new_hit_list(void);
@@ -134,5 +143,9 @@ float    ft_huetorgb(float v1, float v2, float h);
 //sphere
 int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr);
 t_sphere    *alloc_sphere(t_vec3 center, float radius);
+
+//camera
+t_camera    init_camera(void);
+t_ray    get_ray(t_camera *cam, float u, float v);
 
 #endif
