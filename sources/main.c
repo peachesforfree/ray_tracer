@@ -61,11 +61,16 @@ int is_object_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t
 t_vec3      color(t_ray *ray, t_hit_list *world)
 {
     t_hit_record    rec;
+    t_vec3 target;
 
     rec.normal = new_vec(0.0, 0.0, 0.0);
     if (is_object_hit(ray, 0.0, MAXFLOAT, &rec, world) != 0)  //this hit function is different. This one will cycle thru the linked list
     {
-        return (v_mult_f(0.5, new_vec(x(&rec.normal) + 1.0, y(&rec.normal) + 1.0, z(&rec.normal) + 1.0)));
+        target = v_plus_v(v_plus_v(rec.p, rec.normal), random_in_sphere());
+        t_ray temp;
+        temp = new_ray(rec.p, v_minus_v(target, rec.p));
+        return (v_mult_f(0.5, color( &temp, world)));
+        //return (v_mult_f(0.5, new_vec(x(&rec.normal) + 1.0, y(&rec.normal) + 1.0, z(&rec.normal) + 1.0)));
     }
     else      //use sky coloring
     {

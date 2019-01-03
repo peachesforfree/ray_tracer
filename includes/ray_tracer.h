@@ -12,7 +12,7 @@
 //Screen dimensions
 #define WIN_X 800
 #define WIN_Y 400
-#define SAMPLE_COUNT 1
+#define SAMPLE_COUNT 100
 
 //material types
 #define MATERIAL_TYPES 3
@@ -143,6 +143,8 @@ float    ft_huetorgb(float v1, float v2, float h);
 //sphere
 int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr);
 t_sphere    *alloc_sphere(t_vec3 center, float radius);
+t_vec3  random_in_sphere();
+
 
 //camera
 t_camera    init_camera(void);

@@ -16,6 +16,26 @@ typedef struct      s_hit_record
 
 */
 
+t_vec3  random_vec3()
+{
+    t_vec3  random;
+
+    random = new_vec(drand48(), drand48(), drand48());
+    random = v_mult_f(2.0, random);
+    random = v_minus_v(random, new_vec(1.0, 1.0, 1.0));
+    return (random);
+}
+
+t_vec3  random_in_sphere()
+{
+    t_vec3  s;
+
+    s = random_vec3();
+    while (squared_length(s) >= 1.0)
+        s = random_vec3();
+    return (s);
+}
+
 int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr)
 {
     t_sphere *sphere;
