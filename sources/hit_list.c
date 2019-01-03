@@ -39,6 +39,8 @@ t_hit_list          *new_hit_list(void)
     head = NULL;
     head = append_list(head, alloc_sphere(new_vec(0,0,-1), 0.5), SPHERE);
     head = append_list(head, alloc_sphere(new_vec(0,-100.5, -1), 100), SPHERE);
+    //head = append_list(head, alloc_sphere(new_vec(0,0,-1), 0.5), SPHERE);
+
     return (head);
 }
 

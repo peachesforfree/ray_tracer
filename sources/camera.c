@@ -16,7 +16,7 @@ t_ray    get_ray(t_camera *cam, float u, float v)
     r.B = cam->lower_left_corner;
     r.B = v_plus_v(r.B, v_mult_f(u, cam->horizontal));
     r.B = v_plus_v(r.B, v_mult_f(v, cam->vertical));
-    r.B = v_minus_v(cam->origin, r.B);
+    r.B = v_minus_v(r.B, cam->origin);
     return (r);
 }
 
@@ -30,6 +30,6 @@ t_camera    init_camera(void)
     // set_vec(&c.vertical, 0.0, 2.0, 0.0);
     c.vertical = new_vec(0.0, 2.0, 0.0);
     // set_vec(&c.origin, 0.0, 0.0, 0.0);
-    c.origin = new_vec(0.0, 2.0, 0.0);
+    c.origin = new_vec(0.0, 0.0, 0.0);
     return (c);
 }

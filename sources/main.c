@@ -4,47 +4,12 @@
 
 int     (*g_hit_func_select[2])(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr) = 
 {
+    [0] = NULL,
     [1] = ft_sphere_hit
 };
 
 
-int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr)
-{
-    t_sphere *sphere;
-    t_vec3 oc;
-    float a;
-    float b;
-    float c;
-    float discriminant;
 
-    sphere = ptr;
-    oc = v_minus_v(origin(*r), sphere->center);
-    a = dot(direction(*r), direction(*r));
-    b = dot(oc, direction(*r));
-    c = dot(oc, oc) - (sphere->radius * sphere->radius);
-    discriminant = (b * b) - (a * c);
-    if (discriminant > 0)
-    {
-        float temp;
-        temp = (-b - sqrtf((b * b) - (a * c))) / a;         //optimize ... replace (b * b - a * c) with discriminant variable?
-        if (temp < t_max && temp > t_min)
-        {
-            rec->t = temp;
-            rec->p = point_at_parameter(*r, rec->t);
-            rec->normal = v_div_f(sphere->radius, v_minus_v(rec->p, sphere->center));
-            return (1);
-        }
-        temp = (-b + sqrtf((b * b) - (a * c))) / a;
-        if (temp < t_max && temp > t_min)
-        {
-            rec->t = temp;
-            rec->p = point_at_parameter(*r, rec->t);
-            rec->normal = v_div_f(sphere->radius, v_minus_v(rec->p, sphere->center));
-            return (1);
-        }
-    }
-    return (0);
-}
 
 /*
     Given world list, ray, min/max, and &t_hit_record
@@ -61,9 +26,12 @@ int is_object_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t
 {
     t_hit_record temp_rec;
     int hit_anything;
-    double closest_so_far;
+    float closest_so_far;
 
     hit_anything = 0;
+    temp_rec.t = 0;
+    temp_rec.p = new_vec(0.0,0.0,0.0);
+    temp_rec.normal = new_vec(0.0,0.0,0.0);
     closest_so_far = t_max;
     while(world != NULL)
     {
@@ -97,7 +65,7 @@ t_vec3      color(t_ray *ray, t_hit_list *world)
     rec.normal = new_vec(0.0, 0.0, 0.0);
     if (is_object_hit(ray, 0.0, MAXFLOAT, &rec, world) != 0)  //this hit function is different. This one will cycle thru the linked list
     {
-        return (v_mult_f(0.5, new_vec(x(&rec.normal) + 1, y(&rec.normal) + 1.0, z(&rec.normal) + 1.0)));
+        return (v_mult_f(0.5, new_vec(x(&rec.normal) + 1.0, y(&rec.normal) + 1.0, z(&rec.normal) + 1.0)));
     }
     else      //use sky coloring
     {
@@ -162,8 +130,9 @@ int main(void)
                 alias_count = 0;
                 while (alias_count < SAMPLE_COUNT)
                 {
-                    u = (float)(i + (float)(drand48())) / (float)(i);
-                    v = (float) (j + (float)(drand48())) / (float)(j);
+                    u = (float)(i + (float)(drand48())) / (float)(WIN_X);
+                    v = (float)(j + (float)(drand48())) / (float)(WIN_Y);
+                    //dprintf(2, "X: %f Y: %f\n", u * (float)(WIN_X), v * (float)(WIN_Y));
                     r = get_ray(&camera, u, v);
                     p = point_at_parameter(r, 2.0);
                     pixel = v_plus_v(pixel, color(&r, world));
