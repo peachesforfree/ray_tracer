@@ -17,7 +17,8 @@ void    *alloc_new_metal(t_vec3 values)
     t_metal     *object;
 
     object = ft_memalloc(sizeof(t_metal));
-    copy_vector(&object->albedo, &values);
+    object->albedo =  values;
+    //copy_vector(&object->albedo, &values);
     object->fuzz = 0;
     return (object);
 }
@@ -33,7 +34,6 @@ t_hit_list          *append_list(t_hit_list *head, void *object, int id_type, in
     t_hit_list      *temp;
 
     current = (t_hit_list*)ft_memalloc(sizeof(t_hit_list));
-    current->type = 1;
     current->object = object;
     current->type = id_type;
     current->material_id = id_material;

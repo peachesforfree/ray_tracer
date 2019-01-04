@@ -8,10 +8,11 @@ int     (*g_hit_func_select[2])(const t_ray *r, float t_min, float t_max, t_hit_
     [1] = ft_sphere_hit
 };
 
-int    (*g_material_select[2])(t_ray *ray,  t_hit_record rec, t_vec3 *attenuation, t_ray *scattered, void *ptr) =
+int    (*g_material_select[3])(t_ray *ray,  t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr) =
 {
     [0] = lambertian_scatter,
-    [1] = metal_scatter
+    [1] = metal_scatter,
+    [2] = NULL
 };
 
 
@@ -65,13 +66,13 @@ int is_object_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t
 t_vec3      color(t_ray *ray, t_hit_list *world, int depth)
 {
     t_hit_record    rec;
-    
+
     rec.normal = new_vec(0.0, 0.0, 0.0);
     if (is_object_hit(ray, 0.001, MAXFLOAT, &rec, world) != 0)  //this hit function is different. This one will cycle thru the linked list
     {
         t_ray scattered;
         t_vec3 attenuation;
-        if (depth < 50 && g_material_select[world->material_id](ray, rec, &attenuation, &scattered, world->material))
+        if (depth < 50 && g_material_select[world->material_id](ray, &rec, &attenuation, &scattered, world->material))
             return (v_mult_v(attenuation, color(&scattered, world, depth+1)));
         else
             return (new_vec(0, 0, 0));

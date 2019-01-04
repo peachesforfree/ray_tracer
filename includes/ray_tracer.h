@@ -51,9 +51,10 @@ typedef struct      s_ray
 
 typedef struct      s_hit_record
 {
-    float   t;
-    t_vec3  p;
-    t_vec3  normal;
+    float           t;
+    t_vec3          p;
+    t_vec3          normal;
+    t_hit_list      *current_object;
 }                   t_hit_record;
 
 typedef struct      s_hit_data
@@ -169,8 +170,8 @@ t_sphere    *alloc_sphere(t_vec3 center, float radius);
 t_vec3  random_in_sphere();
 
 //material functions
-int     metal_scatter(t_ray *ray,  t_hit_record rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
-int     lambertian_scatter(t_ray *ray,  t_hit_record rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
+int     metal_scatter(t_ray *ray,  t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
+int     lambertian_scatter(t_ray *ray,  t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
 
 
 //camera
