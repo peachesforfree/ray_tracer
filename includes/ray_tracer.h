@@ -83,8 +83,15 @@ typedef struct      s_hit_list
     int             type;
     void            *object;
 //    int             (*hit)();
+    int             material_id;
+    void            *material;
     struct s_hit_list      *next;
 }                   t_hit_list;
+
+typedef struct      s_material
+{
+    t_vec3          albedo;
+}                   t_material;
 
 typedef struct      s_camera
 {
@@ -93,6 +100,22 @@ typedef struct      s_camera
     t_vec3  horizontal;
     t_vec3  vertical;
 }                   t_camera;
+
+typedef struct      s_dielectric
+{
+    float           ref_idx;
+}                   t_dielectric;
+
+typedef struct      s_metal
+{
+    t_vec3          albedo;
+    float           fuzz;
+}                   t_metal;
+
+typedef struct      s_lambertian
+{
+    t_vec3      albedo;
+}                   t_lambertian;
 
 
 //hit list functions
@@ -144,6 +167,10 @@ float    ft_huetorgb(float v1, float v2, float h);
 int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr);
 t_sphere    *alloc_sphere(t_vec3 center, float radius);
 t_vec3  random_in_sphere();
+
+//material functions
+int     metal_scatter(t_ray *ray,  t_hit_record rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
+int     lambertian_scatter(t_ray *ray,  t_hit_record rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
 
 
 //camera

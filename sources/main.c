@@ -8,7 +8,11 @@ int     (*g_hit_func_select[2])(const t_ray *r, float t_min, float t_max, t_hit_
     [1] = ft_sphere_hit
 };
 
-
+int    (*g_material_select[2])(t_ray *ray,  t_hit_record rec, t_vec3 *attenuation, t_ray *scattered, void *ptr) =
+{
+    [0] = lambertian_scatter,
+    [1] = metal_scatter
+};
 
 
 /*
@@ -58,18 +62,20 @@ int is_object_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t
     we use a default sky color for the pixel
 */
 
-t_vec3      color(t_ray *ray, t_hit_list *world)
+t_vec3      color(t_ray *ray, t_hit_list *world, int depth)
 {
     t_hit_record    rec;
-    t_vec3 target;
-
+    
     rec.normal = new_vec(0.0, 0.0, 0.0);
-    if (is_object_hit(ray, 0.0, MAXFLOAT, &rec, world) != 0)  //this hit function is different. This one will cycle thru the linked list
+    if (is_object_hit(ray, 0.001, MAXFLOAT, &rec, world) != 0)  //this hit function is different. This one will cycle thru the linked list
     {
-        target = v_plus_v(v_plus_v(rec.p, rec.normal), random_in_sphere());
-        t_ray temp;
-        temp = new_ray(rec.p, v_minus_v(target, rec.p));
-        return (v_mult_f(0.5, color( &temp, world)));
+        t_ray scattered;
+        t_vec3 attenuation;
+        if (depth < 50 && g_material_select[world->material_id](ray, rec, &attenuation, &scattered, world->material))
+            return (v_mult_v(attenuation, color(&scattered, world, depth+1)));
+        else
+            return (new_vec(0, 0, 0));
+        //return (v_mult_f(0.5, color( &temp, world)));
         //return (v_mult_f(0.5, new_vec(x(&rec.normal) + 1.0, y(&rec.normal) + 1.0, z(&rec.normal) + 1.0)));
     }
     else      //use sky coloring
@@ -81,7 +87,7 @@ t_vec3      color(t_ray *ray, t_hit_list *world)
 
         unit_direction = unit_vector(direction(*ray));
 
-        t = (0.5 * y(&unit_direction) + 1.0);
+        t = 0.5 * (y(&unit_direction) + 1.0);
 
         white = new_vec(1.0, 1.0, 1.0);
         white = v_mult_f((1.0 - t), white);
@@ -140,12 +146,13 @@ int main(void)
                     //dprintf(2, "X: %f Y: %f\n", u * (float)(WIN_X), v * (float)(WIN_Y));
                     r = get_ray(&camera, u, v);
                     p = point_at_parameter(r, 2.0);
-                    pixel = v_plus_v(pixel, color(&r, world));
+                    pixel = v_plus_v(pixel, color(&r, world, 0));
                     alias_count++;
                 }
                         
 
             pixel = v_div_f(SAMPLE_COUNT, pixel);
+            pixel = new_vec(sqrtf(pixel.e[0]),sqrtf(pixel.e[1]),sqrtf(pixel.e[2]));
             int ir = (int)(255.99 * pixel.e[0]);
             int ig = (int)(255.99 * pixel.e[1]);
             int ib = (int)(255.99 * pixel.e[2]);

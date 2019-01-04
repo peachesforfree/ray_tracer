@@ -26,7 +26,8 @@ SRCS =	sources/main.c \
 		sources/vector.c \
 		sources/hit_list.c \
 		sources/sphere.c \
-		sources/camera.c
+		sources/camera.c \
+		sources/material.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -35,7 +36,7 @@ INC = includes/
 FRAMEWORKS = -framework OpenGl -framework AppKit
 
 all: $(NAME)
-	@$(CC) $(FLAGS) -o $(NAME) $(SRCS) -I. $(LIBS) $(FRAMEWORKS)
+	@$(CC) $(FLAGS) -o $(NAME) $(SRCS) -I. $(LIBS) $(FRAMEWORKS) -O3
 
 $(NAME):
 	@make -C libs/libft
