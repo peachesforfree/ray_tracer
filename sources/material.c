@@ -102,11 +102,11 @@ int     dielectric_scatter(t_ray *ray, t_hit_record *rec, t_vec3 *attenuation, t
     }
     if (drand48() < reflect_prob)
     {
-        *scattered = new_ray(rec->p, reflected);
+        *scattered = new_ray(rec->p, v_plus_v(refracted, v_mult_f(object->fuzz, random_in_sphere())));
     }
     else
     {
-        *scattered = new_ray(rec->p, refracted);
+        *scattered = new_ray(rec->p, v_plus_v(refracted, v_mult_f(object->fuzz, random_in_sphere())));
     }
     return (1);//return true
 }

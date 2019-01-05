@@ -14,7 +14,7 @@
 //Screen dimensions
 #define WIN_X 800
 #define WIN_Y 400
-#define SAMPLE_COUNT 500
+#define SAMPLE_COUNT 100
 
 //material types
 #define MATERIAL_TYPES 3
@@ -113,6 +113,7 @@ typedef struct      s_lambertian
 typedef struct      s_dielectric
 {
     float           ref_idx;
+    float           fuzz;
 }                   t_dielectric;
 
 //hit list functions
