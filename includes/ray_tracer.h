@@ -14,7 +14,7 @@
 //Screen dimensions
 #define WIN_X 800
 #define WIN_Y 400
-#define SAMPLE_COUNT 20
+#define SAMPLE_COUNT 500
 
 //material types
 #define MATERIAL_TYPES 3

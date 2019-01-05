@@ -20,7 +20,7 @@ void    *alloc_new_metal(t_vec3 values, float f)
     object->albedo =  values;
     //copy_vector(&object->albedo, &values);
     if (f < 0 || f > 1)
-        object->fuzz = 0;
+        object->fuzz = 1;
     else
         object->fuzz = f;
     return (object);

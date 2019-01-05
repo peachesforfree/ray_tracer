@@ -36,7 +36,7 @@ int     metal_scatter(t_ray *ray,  t_hit_record *rec, t_vec3 *attenuation, t_ray
     object = ptr;
     reflected = reflect(unit_vector(direction(*ray)), rec->normal);
     scattered->A = rec->p;
-    scattered->B = reflected;
+    scattered->B = v_plus_v(reflected, v_mult_f(object->fuzz, random_in_sphere()));
     *attenuation = object->albedo;
     if (dot(direction(*scattered), rec->normal) > 0)
         return (1);
