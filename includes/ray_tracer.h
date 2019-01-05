@@ -9,10 +9,12 @@
 #include "../includes/keys.h"
 #include <math.h>
 
+//3200 x 1800 mac standard resolution?
+
 //Screen dimensions
 #define WIN_X 800
 #define WIN_Y 400
-#define SAMPLE_COUNT 100
+#define SAMPLE_COUNT 20
 
 //material types
 #define MATERIAL_TYPES 3
@@ -49,6 +51,16 @@ typedef struct      s_ray
     t_vec3      B;
 }                   t_ray;
 
+typedef struct      s_hit_list
+{
+    int             type;
+    void            *object;
+//    int             (*hit)();
+    int             material_id;
+    void            *material;
+    struct s_hit_list      *next;
+}                   t_hit_list;
+
 typedef struct      s_hit_record
 {
     float           t;
@@ -79,21 +91,6 @@ typedef struct      s_sphere
     float               radius;
 }                   t_sphere;
 
-typedef struct      s_hit_list
-{
-    int             type;
-    void            *object;
-//    int             (*hit)();
-    int             material_id;
-    void            *material;
-    struct s_hit_list      *next;
-}                   t_hit_list;
-
-typedef struct      s_material
-{
-    t_vec3          albedo;
-}                   t_material;
-
 typedef struct      s_camera
 {
     t_vec3  origin;
@@ -101,11 +98,6 @@ typedef struct      s_camera
     t_vec3  horizontal;
     t_vec3  vertical;
 }                   t_camera;
-
-typedef struct      s_dielectric
-{
-    float           ref_idx;
-}                   t_dielectric;
 
 typedef struct      s_metal
 {
@@ -118,6 +110,10 @@ typedef struct      s_lambertian
     t_vec3      albedo;
 }                   t_lambertian;
 
+typedef struct      s_dielectric
+{
+    float           ref_idx;
+}                   t_dielectric;
 
 //hit list functions
 t_hit_list *new_hit_list(void);
@@ -171,7 +167,9 @@ t_vec3  random_in_sphere();
 
 //material functions
 int     metal_scatter(t_ray *ray,  t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
-int     lambertian_scatter(t_ray *ray,  t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
+int     lambertian_scatter(t_ray *ray, t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
+int     dielectric_scatter(t_ray *ray, t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
+
 
 
 //camera

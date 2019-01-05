@@ -12,14 +12,26 @@ void    *alloc_new_lambertian(t_vec3 values)
     return (object);
 }
 
-void    *alloc_new_metal(t_vec3 values)
+void    *alloc_new_metal(t_vec3 values, float f)
 {
     t_metal     *object;
 
     object = ft_memalloc(sizeof(t_metal));
     object->albedo =  values;
     //copy_vector(&object->albedo, &values);
-    object->fuzz = 0;
+    if (f < 0 || f > 1)
+        object->fuzz = 0;
+    else
+        object->fuzz = f;
+    return (object);
+}
+
+void    *alloc_new_dielectric(float refrac_index)
+{
+    t_dielectric    *object;
+
+    object = ft_memalloc(sizeof(t_dielectric));
+    object->ref_idx = refrac_index;
     return (object);
 }
 
@@ -58,10 +70,11 @@ t_hit_list          *new_hit_list(void)
     t_hit_list      *head;
     
     head = NULL;
-    head = append_list(head, alloc_sphere(new_vec(0,0,-1), 0.5), SPHERE, LAMBERTIAN, alloc_new_lambertian(new_vec(0.8, 0.3, 0.3)));
+    head = append_list(head, alloc_sphere(new_vec(0,0,-1), 0.5), SPHERE, LAMBERTIAN, alloc_new_lambertian(new_vec(0.1, 0.2, 0.5)));
     head = append_list(head, alloc_sphere(new_vec(0,-100.5, -1), 100), SPHERE, LAMBERTIAN, alloc_new_lambertian(new_vec(0.8, 0.8, 0.0)));
-    head = append_list(head, alloc_sphere(new_vec( 1, 0, -1), 0.5), SPHERE, METAL, alloc_new_metal(new_vec( 0.8, 0.6, 0.2)));
-    head = append_list(head, alloc_sphere(new_vec( -1, 0, -1), 0.5), SPHERE, METAL, alloc_new_metal(new_vec( 0.8, 0.8, 0.8)));
+    head = append_list(head, alloc_sphere(new_vec( 1, 0, -1), 0.5), SPHERE, METAL, alloc_new_metal(new_vec( 0.8, 0.6, 0.2), 0.3));
+    //head = append_list(head, alloc_sphere(new_vec( -1, 0, -1), 0.5), SPHERE, METAL, alloc_new_metal(new_vec( 0.8, 0.8, 0.8), 1.0));
+    head = append_list(head, alloc_sphere(new_vec( -1, 0, -1), 0.5), SPHERE, DIELECTRIC, alloc_new_dielectric(1.5));
     //head = append_list(head, alloc_sphere(new_vec(0,0,-1), 0.5), SPHERE);
 
     return (head);

@@ -12,7 +12,7 @@ int    (*g_material_select[3])(t_ray *ray,  t_hit_record *rec, t_vec3 *attenuati
 {
     [0] = lambertian_scatter,
     [1] = metal_scatter,
-    [2] = NULL
+    [2] = dielectric_scatter
 };
 
 
@@ -45,7 +45,8 @@ int is_object_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, t
         {                                                                     //need to figure out how to package data to fit into norme
             hit_anything = 1;
             closest_so_far = temp_rec.t;
-            *rec = temp_rec;                                                   //may get problems here due to address stuff
+            *rec = temp_rec;
+            rec->current_object = world;
         }
         world = world->next;
     }
@@ -72,10 +73,10 @@ t_vec3      color(t_ray *ray, t_hit_list *world, int depth)
     {
         t_ray scattered;
         t_vec3 attenuation;
-        if (depth < 50 && g_material_select[world->material_id](ray, &rec, &attenuation, &scattered, world->material))
-            return (v_mult_v(attenuation, color(&scattered, world, depth+1)));
+        if (depth < 50 && g_material_select[rec.current_object->material_id](ray, &rec, &attenuation, &scattered, rec.current_object->material) > 0)
+            return (v_mult_v(attenuation, color(&scattered, world, depth + 1)));
         else
-            return (new_vec(0, 0, 0));
+            return (new_vec(0.5, 0.5, 0.5));
         //return (v_mult_f(0.5, color( &temp, world)));
         //return (v_mult_f(0.5, new_vec(x(&rec.normal) + 1.0, y(&rec.normal) + 1.0, z(&rec.normal) + 1.0)));
     }
