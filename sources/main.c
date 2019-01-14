@@ -68,12 +68,11 @@ t_vec3      color(t_ray *ray, t_hit_list *world, int depth)
 {
     t_hit_record    rec;
 
-    rec.normal = new_vec(0.0, 0.0, 0.0);
     if (is_object_hit(ray, 0.001, MAXFLOAT, &rec, world) != 0)  //this hit function is different. This one will cycle thru the linked list
     {
         t_ray scattered;
         t_vec3 attenuation;
-        if (depth < 50 && g_material_select[rec.current_object->material_id](ray, &rec, &attenuation, &scattered, rec.current_object->material) > 0)
+        if (depth < MARCH_DEPTH && g_material_select[rec.current_object->material_id](ray, &rec, &attenuation, &scattered, rec.current_object->material) > 0)
             return (v_mult_v(attenuation, color(&scattered, world, depth + 1)));
         else
             return (new_vec(0.5, 0.5, 0.5));
@@ -115,7 +114,7 @@ int main(void)
 
     t_camera        camera;
 
-    camera = init_camera();
+    camera = init_camera(new_vec(0, .2, 1), new_vec(0, 0, 0), new_vec(0, 1, 0), 50, (float)(WIN_X) / (float)(WIN_Y));
 
     float j;
     float i;

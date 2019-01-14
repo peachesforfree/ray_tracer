@@ -47,9 +47,9 @@ float   schlick(float cosine, float ref_idx)
 {
     float r0;
     
-    r0 = (1 - ref_idx) / (1 + ref_idx);
+    r0 = (1.0 - ref_idx) / (1.0 + ref_idx);
     r0 = r0 * r0;
-    return (r0 + (1 - r0) * powf((1 - cosine), 5));
+    return ((r0 + (1.0 - r0)) * powf((1.0 - cosine), 5));
 }
 
 int     refract(t_vec3 v, t_vec3 *n, float ni_over_nt, t_vec3 *refracted)
@@ -68,9 +68,9 @@ int     refract(t_vec3 v, t_vec3 *n, float ni_over_nt, t_vec3 *refracted)
 
 int     dielectric_scatter(t_ray *ray, t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr)
 {
-    t_dielectric *object;
+    t_dielectric *object = ptr;
     t_vec3 outward_normal;
-    t_vec3 reflected = reflect(direction(*ray), rec->normal);
+    //t_vec3 reflected;
     *attenuation = new_vec(1.0, 1.0, 1.0);
 
     float   ni_over_nt;
@@ -78,8 +78,7 @@ int     dielectric_scatter(t_ray *ray, t_hit_record *rec, t_vec3 *attenuation, t
     float   reflect_prob;
     float   cosine;
 
-    object = ptr;
-    if (dot(direction(*ray), rec->normal) > 0)
+    if (dot(direction(*ray), rec->normal) > 0.0)
     {
         outward_normal = v_mult_f(-1.0, rec->normal);
         ni_over_nt = object->ref_idx;
@@ -88,8 +87,8 @@ int     dielectric_scatter(t_ray *ray, t_hit_record *rec, t_vec3 *attenuation, t
     else
     {
         outward_normal = rec->normal;
-        ni_over_nt = 1.0 / object->ref_idx;
-        cosine = (-1 * dot(direction(*ray), rec->normal)) / length(direction(*ray));
+        ni_over_nt = (float)(1.0 / object->ref_idx);
+        cosine = (-1.0 * dot(direction(*ray), rec->normal)) / length(direction(*ray));
     }
     if (refract(direction(*ray), &outward_normal, ni_over_nt, &refracted))
     {
@@ -97,16 +96,17 @@ int     dielectric_scatter(t_ray *ray, t_hit_record *rec, t_vec3 *attenuation, t
     }
     else
     {
-        *scattered = new_ray(rec->p, reflected);
         reflect_prob = 1.0;
     }
-    if (drand48() < reflect_prob)
+    if ((float)(drand48()) < reflect_prob)
     {
-        *scattered = new_ray(rec->p, v_plus_v(refracted, v_mult_f(object->fuzz, random_in_sphere())));
+        scattered->A = rec->p;
+        scattered->B = reflect(direction(*ray), rec->normal);;
     }
     else
     {
-        *scattered = new_ray(rec->p, v_plus_v(refracted, v_mult_f(object->fuzz, random_in_sphere())));
+        scattered->A = rec->p;
+        scattered->B = refracted;
     }
-    return (1);//return true
+    return (1);
 }

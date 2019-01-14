@@ -73,9 +73,11 @@ t_hit_list          *new_hit_list(void)
     head = NULL;
     head = append_list(head, alloc_sphere(new_vec(0,0,-1), 0.5), SPHERE, LAMBERTIAN, alloc_new_lambertian(new_vec(0.1, 0.2, 0.5)));
     head = append_list(head, alloc_sphere(new_vec(0,-100.5, -1), 100), SPHERE, LAMBERTIAN, alloc_new_lambertian(new_vec(0.8, 0.8, 0.0)));
-    head = append_list(head, alloc_sphere(new_vec( 1, 0, -1), 0.5), SPHERE, METAL, alloc_new_metal(new_vec( 0.8, 0.6, 0.2), 0.3));
+    head = append_list(head, alloc_sphere(new_vec( 1, 0, -1), 0.5), SPHERE, METAL, alloc_new_metal(new_vec( 0.8, 0.6, 0.2), 0.0));
     //head = append_list(head, alloc_sphere(new_vec( -1, 0, -1), 0.5), SPHERE, METAL, alloc_new_metal(new_vec( 0.8, 0.8, 0.8), 1.0));
-    head = append_list(head, alloc_sphere(new_vec( -1, 0, -1), 0.5), SPHERE, DIELECTRIC, alloc_new_dielectric(1.5, 0.03));
+    head = append_list(head, alloc_sphere(new_vec( -1, 0, -1), 0.5), SPHERE, DIELECTRIC, alloc_new_dielectric(1.5, 0.0));
+    //head = append_list(head, alloc_sphere(new_vec( -1, 0, -1), -0.45), SPHERE, DIELECTRIC, alloc_new_dielectric(1.5, 0.0));
+    
     //head = append_list(head, alloc_sphere(new_vec(0,0,-1), 0.5), SPHERE);
 
     return (head);

@@ -12,9 +12,10 @@
 //3200 x 1800 mac standard resolution?
 
 //Screen dimensions
-#define WIN_X 800
-#define WIN_Y 400
-#define SAMPLE_COUNT 100
+#define WIN_X 25
+#define WIN_Y 25
+#define SAMPLE_COUNT 1
+#define MARCH_DEPTH 50
 
 //material types
 #define MATERIAL_TYPES 3
@@ -23,10 +24,10 @@
 #define DIELECTRIC  2
 
 #define SPHERE      1
-#define CONE        2
-#define TRIANGLE    3
-#define CYLINDER    4
-
+#define RECTANGLE   2
+#define CYLINDER    3
+#define CONE        4
+#define TRIANGLE    5
 
 typedef struct	s_mlx
 {
@@ -116,6 +117,26 @@ typedef struct      s_dielectric
     float           fuzz;
 }                   t_dielectric;
 
+typedef struct      s_matrix
+{
+    float           o[4][4];
+}                   t_matrix;
+
+typedef struct      s_rectangle
+{
+    float           x0;
+    float           x1;
+    float           y0;
+    float           y1;
+    float           k;
+    t_vec3          color;
+    t_vec3          normal;     //r(alpha, beta) = a+(alpha)b+(beta)c+d = 0;
+    t_vec3          position;
+    t_matrix        translate;
+    t_matrix        transform;
+    t_matrix        rotate;
+}                   t_rectangle;
+
 //hit list functions
 t_hit_list *new_hit_list(void);
 
@@ -174,7 +195,7 @@ int     dielectric_scatter(t_ray *ray, t_hit_record *rec, t_vec3 *attenuation, t
 
 
 //camera
-t_camera    init_camera(void);
+t_camera    init_camera(t_vec3 look_from, t_vec3 look_at, t_vec3 vert_up,  float vfov, float aspect);
 t_ray    get_ray(t_camera *cam, float u, float v);
 
 #endif
