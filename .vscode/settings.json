@@ -11,6 +11,7 @@
         "typeinfo": "cpp",
         "algorithm": "cpp",
         "__locale": "c",
-        "ray_tracer.h": "c"
+        "ray_tracer.h": "c",
+        "libft.h": "c"
     }
 }
