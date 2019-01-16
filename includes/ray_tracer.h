@@ -12,9 +12,9 @@
 //3200 x 1800 mac standard resolution?
 
 //Screen dimensions
-#define WIN_X 25
-#define WIN_Y 25
-#define SAMPLE_COUNT 1
+#define WIN_X 800
+#define WIN_Y 400
+#define SAMPLE_COUNT 1000
 #define MARCH_DEPTH 50
 
 //material types
@@ -122,19 +122,17 @@ typedef struct      s_matrix
     float           o[4][4];
 }                   t_matrix;
 
+
 typedef struct      s_rectangle
 {
-    float           x0;
-    float           x1;
-    float           y0;
-    float           y1;
-    float           k;
+    t_vec3          translate;
+    t_vec3          normal;
     t_vec3          color;
-    t_vec3          normal;     //r(alpha, beta) = a+(alpha)b+(beta)c+d = 0;
-    t_vec3          position;
-    t_matrix        translate;
-    t_matrix        transform;
-    t_matrix        rotate;
+    t_vec3          scale;
+    t_vec3          top_left;
+    t_vec3          top_right;
+    t_vec3          bottom_left;
+    t_vec3          bottom_right;
 }                   t_rectangle;
 
 //hit list functions
@@ -183,14 +181,24 @@ int    ft_hsltorgb(double h, float s, float l);
 float    ft_huetorgb(float v1, float v2, float h);
 
 //sphere
-int     ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr);
+int         ft_sphere_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr);
 t_sphere    *alloc_sphere(t_vec3 center, float radius);
-t_vec3  random_in_sphere();
+t_vec3      random_in_sphere();
+
+//rectangle
+t_rectangle         *alloc_new_rectangle(t_vec3 trans, t_vec3 normal, t_vec3 color, t_vec3 scale);
+
+
 
 //material functions
 int     metal_scatter(t_ray *ray,  t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
 int     lambertian_scatter(t_ray *ray, t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
 int     dielectric_scatter(t_ray *ray, t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr);
+
+//fun math stuff
+t_vec3      degree_to_radian(t_vec3 degree);
+t_vec3      rotate_point(t_vec3 normal, t_vec3 point);
+
 
 
 
