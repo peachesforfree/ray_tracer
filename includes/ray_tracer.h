@@ -14,7 +14,7 @@
 //Screen dimensions
 #define WIN_X 800
 #define WIN_Y 400
-#define SAMPLE_COUNT 1000
+#define SAMPLE_COUNT 100
 #define MARCH_DEPTH 50
 
 //material types
@@ -186,8 +186,8 @@ t_sphere    *alloc_sphere(t_vec3 center, float radius);
 t_vec3      random_in_sphere();
 
 //rectangle
-t_rectangle         *alloc_new_rectangle(t_vec3 trans, t_vec3 normal, t_vec3 color, t_vec3 scale);
-
+t_rectangle         *alloc_rectangle(t_vec3 trans, t_vec3 normal, int scale);
+int     ft_rectangle_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr);
 
 
 //material functions

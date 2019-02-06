@@ -27,7 +27,9 @@ SRCS =	sources/main.c \
 		sources/hit_list.c \
 		sources/sphere.c \
 		sources/camera.c \
-		sources/material.c
+		sources/material.c \
+		sources/rectangle.c \
+		sources/point_math.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -36,24 +38,24 @@ INC = includes/
 FRAMEWORKS = -framework OpenGl -framework AppKit
 
 all: $(NAME)
-	@$(CC) $(FLAGS) -o $(NAME) $(SRCS) -I. $(LIBS) $(FRAMEWORKS) -O3
+	$(CC) -O3 $(FLAGS) -o $(NAME) $(SRCS) -I /includes $(LIBS) $(FRAMEWORKS) 
 
 $(NAME):
-	@make -C libs/libft
-	@make -C libs/minilibx
+	make -C libs/libft
+	make -C libs/minilibx
 
 debug:
-	@$(CC) -g $(FLAGS) -o $(NAME) $(SRCS) -I. $(LIBS) $(FRAMEWORKS)
+	$(CC) -g $(FLAGS) -o $(NAME) $(SRCS) -I. $(LIBS) $(FRAMEWORKS)
 
 clean:
-	@/bin/rm -f rm $(NAME)
-	@make -C libs/libft/ clean
-	@make -C libs/minilibx/ clean
+	/bin/rm -f rm $(NAME)
+	make -C libs/libft/ clean
+	make -C libs/minilibx/ clean
 
 flcean: clean
-	@/bin/rm -f rm $(NAME)
-	@make -C libs/libft/ fclean
-	@make -C libs/minilibx/ clean
+	/bin/rm -f rm $(NAME)
+	make -C libs/libft/ fclean
+	make -C libs/minilibx/ clean
 
 re:fclean all
 

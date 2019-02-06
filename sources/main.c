@@ -2,10 +2,11 @@
 
 
 
-int     (*g_hit_func_select[2])(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr) = 
+int     (*g_hit_func_select[3])(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr) = 
 {
     [0] = NULL,
-    [1] = ft_sphere_hit
+    [1] = ft_sphere_hit,
+    [2] = ft_rectangle_hit
 };
 
 int    (*g_material_select[3])(t_ray *ray,  t_hit_record *rec, t_vec3 *attenuation, t_ray *scattered, void *ptr) =

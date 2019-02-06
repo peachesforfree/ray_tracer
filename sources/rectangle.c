@@ -8,7 +8,7 @@
 void        transform_points(t_rectangle *object)
 {
     t_vec3  points[5];
-    t_vec3  temp;
+   // t_vec3  temp;
     int i;
 
     i = -1;
@@ -57,16 +57,24 @@ void        scale_points(t_rectangle *object)
     object->bottom_right = new_vec((unit / 2) * scale.e[0], -(unit / 2) * scale.e[1], 0);
 }
 
-int     rectangle_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr)
+int     ft_rectangle_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr)
 {
     t_rectangle     *object;
 
-    object = ptr;
-    float   denom;
+    //guessing A is origin and B is direction
+    float t;
 
-    denom = dot();
-    if ()
-    return (1);
+    object = ptr;
+    //checking for intersection on X axis
+    t = (object->scale.e[0] - r->A.e[0])/(r->B.e[0]);
+    if (t >= t_min && t_max >= t)
+    {
+        rec->t = t;
+        rec->p = point_at_parameter(*r, rec->t);
+        rec->normal = object->normal;
+        return (1);
+    }        
+    return (0);
 }
 
 void                translate_rectangle(t_rectangle *rectangle)
@@ -85,21 +93,20 @@ void                translate_rectangle(t_rectangle *rectangle)
     rectangle->bottom_right.e[2] += (rectangle->translate).e[2];
 }
                                         //location      rotations     color         scaling
-t_rectangle         *alloc_new_rectangle(t_vec3 trans, t_vec3 normal, t_vec3 color, t_vec3 scale)
+t_rectangle         *alloc_rectangle(t_vec3 trans, t_vec3 normal, int scale)
 {
     t_rectangle     *object;
 
     object = (t_rectangle*)malloc(sizeof(t_rectangle));
     object->translate = trans;
     object->normal = degree_to_radian(normal);
-    object->color = color;
-    object->scale = scale;
+    object->scale = new_vec(scale, scale, scale);
     //1:    Scale points
     scale_points(object);
     //2:    transform
-    if ((object->normal).e[0] != 0 || (object->normal).e[1] != 0 || (object->normal).e[2] != 0)
-        transform_points(object);
+    //if ((object->normal).e[0] != 0 || (object->normal).e[1] != 0 || (object->normal).e[2] != 0)
+    //    transform_points(object);
     //translate
-    translate_rectangle(object);
+    //translate_rectangle(object);
     return (object);
 }
