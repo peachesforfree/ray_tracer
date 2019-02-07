@@ -52,12 +52,15 @@ clean:
 	make -C libs/libft/ clean
 	make -C libs/minilibx/ clean
 
-flcean: clean
+fclean: clean
 	/bin/rm -f rm $(NAME)
 	make -C libs/libft/ fclean
 	make -C libs/minilibx/ clean
 
-re:fclean all
+re: fclean all
+
+new: all
+	./$(NAME)
 
 
 # gcc -Wall -Wextra -Werror  -framework OpenGL -framework AppKit sources/main.c

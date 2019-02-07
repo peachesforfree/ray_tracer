@@ -115,7 +115,7 @@ int main(void)
 
     t_camera        camera;
 
-    camera = init_camera(new_vec(0, .2, 1), new_vec(0, 0, 0), new_vec(0, 1, 0), 50, (float)(WIN_X) / (float)(WIN_Y));
+    camera = init_camera(new_vec(0, .2, 2), new_vec(0, 0, 0), new_vec(0, 1, 0), 50, (float)(WIN_X) / (float)(WIN_Y));
 
     float j;
     float i;

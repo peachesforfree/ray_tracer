@@ -15,7 +15,7 @@
 #define WIN_X 800
 #define WIN_Y 400
 #define SAMPLE_COUNT 100
-#define MARCH_DEPTH 50
+#define MARCH_DEPTH 25
 
 //material types
 #define MATERIAL_TYPES 3
@@ -127,6 +127,8 @@ typedef struct      s_rectangle
 {
     t_vec3          translate;
     t_vec3          normal;
+    t_vec3          point;
+    t_vec3          point_scale;
     t_vec3          color;
     t_vec3          scale;
     t_vec3          top_left;
@@ -186,7 +188,7 @@ t_sphere    *alloc_sphere(t_vec3 center, float radius);
 t_vec3      random_in_sphere();
 
 //rectangle
-t_rectangle         *alloc_rectangle(t_vec3 trans, t_vec3 normal, int scale);
+t_rectangle         *alloc_rectangle(t_vec3 trans, t_vec3 normal, float scale);
 int     ft_rectangle_hit(const t_ray *r, float t_min, float t_max, t_hit_record *rec, void *ptr);
 
 
