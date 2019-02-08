@@ -122,15 +122,31 @@ typedef struct      s_matrix
     float           o[4][4];
 }                   t_matrix;
 
+/*
+**for x1, x2 ... z2     the first is in the postitive zone of the scale
+**  the second is the negative
+*/
 
 typedef struct      s_rectangle
 {
     t_vec3          translate;
     t_vec3          normal;
-    t_vec3          point;
-    t_vec3          point_scale;
-    t_vec3          color;
-    t_vec3          scale;
+    float          scale;
+    //planes
+    t_vec3          x1;
+    t_vec3          x2;
+    t_vec3          y1;
+    t_vec3          y2;
+    t_vec3          z1;
+    t_vec3          z2;
+    //correlating normals
+    t_vec3          nx1;
+    t_vec3          nx2;
+    t_vec3          ny1;
+    t_vec3          ny2;
+    t_vec3          nz1;
+    t_vec3          nz2;
+    //square corners ?
     t_vec3          top_left;
     t_vec3          top_right;
     t_vec3          bottom_left;
